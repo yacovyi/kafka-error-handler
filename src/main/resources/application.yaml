@@ -1,0 +1,23 @@
+
+server:
+  port: 8961
+
+host: localhost
+spring:
+  kafka:
+    bootstrap-servers: ${host}:9092
+    consumer:
+      group-id: EnricherGroup
+    producer:
+      value-serializer: org.springframework.kafka.support.serializer.JsonDeserializer
+
+
+
+kafka:
+  topic:
+    enrichment:
+      success:  enrichment.success
+      failure:  enrichment.failure
+      enrichment: enrichment
+    name:
+      file-creation: IcdEventFileCreation
