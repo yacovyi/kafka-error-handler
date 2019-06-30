@@ -1,8 +1,7 @@
-package com.ws.ng.kafkaerrorhandler.config;
+package com.ws.ng.eventenricher.config;
 
-import com.ws.ng.kafkaerrorhandler.controller.MessageController;
-import com.ws.ng.kafkaerrorhandler.model.Message;
-import com.ws.ng.kafkaerrorhandler.producer.MessageProducer;
+import com.ws.ng.eventenricher.model.Message;
+import com.ws.ng.eventenricher.producer.MessageProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;

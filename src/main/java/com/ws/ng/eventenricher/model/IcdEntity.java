@@ -1,4 +1,4 @@
-package com.ws.ng.kafkaerrorhandler.model;
+package com.ws.ng.eventenricher.model;
 
 public class IcdEntity {
     private String wsType;

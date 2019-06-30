@@ -1,4 +1,4 @@
-package com.ws.ng.kafkaerrorhandler.model;
+package com.ws.ng.eventenricher.model;
 
 public class IcdFile extends IcdEntity{
     private String fileType;

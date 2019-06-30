@@ -1,6 +1,4 @@
-package com.ws.ng.kafkaerrorhandler.model;
-
-import com.ws.ng.kafkaerrorhandler.controller.MessageController;
+package com.ws.ng.eventenricher.model;
 
 import java.util.Date;
 

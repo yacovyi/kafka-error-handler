@@ -1,6 +1,6 @@
-package com.ws.ng.kafkaerrorhandler.producer;
+package com.ws.ng.eventenricher.producer;
 
-import com.ws.ng.kafkaerrorhandler.model.Message;
+import com.ws.ng.eventenricher.model.Message;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

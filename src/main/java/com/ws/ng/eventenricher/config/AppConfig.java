@@ -1,4 +1,4 @@
-package com.ws.ng.kafkaerrorhandler.config;
+package com.ws.ng.eventenricher.config;
 
 import org.springframework.context.annotation.Configuration;
 

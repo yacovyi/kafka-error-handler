@@ -1,7 +1,7 @@
-package com.ws.ng.kafkaerrorhandler.service;
+package com.ws.ng.eventenricher.service;
 
-import com.ws.ng.kafkaerrorhandler.model.Message;
-import com.ws.ng.kafkaerrorhandler.producer.MessageProducer;
+import com.ws.ng.eventenricher.model.Message;
+import com.ws.ng.eventenricher.producer.MessageProducer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

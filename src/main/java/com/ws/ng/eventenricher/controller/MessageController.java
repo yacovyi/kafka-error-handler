@@ -1,7 +1,7 @@
-package com.ws.ng.kafkaerrorhandler.controller;
+package com.ws.ng.eventenricher.controller;
 
-import com.ws.ng.kafkaerrorhandler.model.Message;
-import com.ws.ng.kafkaerrorhandler.service.MessageService;
+import com.ws.ng.eventenricher.model.Message;
+import com.ws.ng.eventenricher.service.MessageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

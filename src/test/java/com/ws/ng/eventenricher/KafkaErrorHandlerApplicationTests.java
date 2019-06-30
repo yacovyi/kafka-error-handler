@@ -1,4 +1,4 @@
-package com.ws.ng.kafkaerrorhandler;
+package com.ws.ng.eventenricher;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

@@ -1,7 +1,7 @@
-package com.ws.ng.kafkaerrorhandler.config;
+package com.ws.ng.eventenricher.config;
 
 import com.ws.ng.infra.kafka.config.WsJsonDeserializer;
-import com.ws.ng.kafkaerrorhandler.model.IcdEventFileCreation;
+import com.ws.ng.eventenricher.model.IcdEventFileCreation;
 import com.ws.ng.loginfra.kafka.KafkaParams;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.springframework.beans.factory.annotation.Autowired;

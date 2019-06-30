@@ -1,6 +1,6 @@
-package com.ws.ng.kafkaerrorhandler.consumer;
+package com.ws.ng.eventenricher.consumer;
 
-import com.ws.ng.kafkaerrorhandler.model.IcdEventFileCreation;
+import com.ws.ng.eventenricher.model.IcdEventFileCreation;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
