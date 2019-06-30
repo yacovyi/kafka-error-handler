@@ -53,4 +53,9 @@ public class KafkaTopicConfig {
         return new NewTopic(enrichmentEventTopic, 3, (short) 1);
     }
 
+    @Bean
+    public NewTopic IcdEventFileCreation() {
+        return new NewTopic("IcdEventFileCreation.DLT", 3, (short) 1);
+    }
+
 }

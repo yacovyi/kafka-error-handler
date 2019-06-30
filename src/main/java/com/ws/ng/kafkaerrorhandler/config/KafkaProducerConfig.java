@@ -1,8 +1,11 @@
 package com.ws.ng.kafkaerrorhandler.config;
 
+import com.ws.ng.infra.kafka.config.WsJsonDeserializer;
 import com.ws.ng.kafkaerrorhandler.model.Message;
 import com.ws.ng.kafkaerrorhandler.producer.MessageProducer;
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -16,6 +19,7 @@ import org.springframework.kafka.support.serializer.JsonSerializer;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.BiFunction;
 
 @Configuration
 public class KafkaProducerConfig {
@@ -33,7 +37,18 @@ public class KafkaProducerConfig {
         return props;
     }
 
-    @Bean
+
+  @Bean
+  public Map<String, Object> appProducerConfigs() {
+    Map<String, Object> props = new HashMap<>();
+    props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
+    props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
+    props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
+
+    return props;
+  }
+
+  @Bean
     public ProducerFactory<String, Message> messageProducerFactory() {
       return new DefaultKafkaProducerFactory<>(producerConfigs());
     }
@@ -46,7 +61,7 @@ public class KafkaProducerConfig {
 
     @Bean
     public ProducerFactory<Object, Object> appProducerFactory() {
-      return new DefaultKafkaProducerFactory<>(producerConfigs());
+      return new DefaultKafkaProducerFactory<>(appProducerConfigs());
     }
 
     @Bean
@@ -62,9 +77,12 @@ public class KafkaProducerConfig {
 
     @Bean
     public SeekToCurrentErrorHandler seekToCurrentErrorHandlerDeadLetter(){
+	BiFunction<ConsumerRecord<?, ?>, Exception, TopicPartition>
+		DEFAULT_DESTINATION_RESOLVER = (cr, e) -> new TopicPartition(cr.topic() + ".DLT", cr.partition());
 
+      DeadLetterPublishingRecoverer deadLetterPublishingRecoverer = new DeadLetterPublishingRecoverer(appKafkaTemplate(), DEFAULT_DESTINATION_RESOLVER);
       return new SeekToCurrentErrorHandler(
-              new DeadLetterPublishingRecoverer(appKafkaTemplate()),
+              deadLetterPublishingRecoverer,
                       3);
     }
 

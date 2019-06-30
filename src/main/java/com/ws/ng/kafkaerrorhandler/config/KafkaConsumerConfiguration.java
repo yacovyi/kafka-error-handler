@@ -45,6 +45,17 @@ public class KafkaConsumerConfiguration {
     }
 
     @Bean
+    public ConsumerFactory<String, IcdEventFileCreation> consumerDLFactory() {
+
+
+        return new DefaultKafkaConsumerFactory<>(
+                kafkaParams.consumerConfigs(),
+                new StringDeserializer(),
+                new JsonDeserializer<>(IcdEventFileCreation.class)
+        );
+    }
+
+    @Bean
     public ConcurrentKafkaListenerContainerFactory<String, IcdEventFileCreation> kafkaListenerContainerFactory() {
         ConcurrentKafkaListenerContainerFactory<String, IcdEventFileCreation> factory =
                 new ConcurrentKafkaListenerContainerFactory<>();
@@ -52,6 +63,16 @@ public class KafkaConsumerConfiguration {
 
         //factory.setErrorHandler(seekToCurrentErrorHandler);
         factory.setErrorHandler(seekToCurrentErrorHandlerDeadLetter);
+        return factory;
+    }
+
+    @Bean
+    public ConcurrentKafkaListenerContainerFactory<String, IcdEventFileCreation> kafkaListenerContainerDLFactory() {
+        ConcurrentKafkaListenerContainerFactory<String, IcdEventFileCreation> factory =
+                new ConcurrentKafkaListenerContainerFactory<>();
+        factory.setConsumerFactory(consumerDLFactory());
+
+        factory.setErrorHandler(seekToCurrentErrorHandler);
         return factory;
     }
 
