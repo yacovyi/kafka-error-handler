@@ -15,11 +15,22 @@ public class FileCreationEventListener {
 
 
     @KafkaListener( topics = "${kafka.topic.name.file-creation}",
-			        groupId = "${spring.kafka.consumer.group-id}",
+			        groupId = "#{'${spring.kafka.consumer.group-id}'.concat('-log')}",
 			        containerFactory = "kafkaListenerContainerFactory")
-	public void listen(ConsumerRecord<String, IcdEventFileCreation> cr, @Payload IcdEventFileCreation message) {
+	public void listenAndLog(ConsumerRecord<String, IcdEventFileCreation> cr, @Payload IcdEventFileCreation message) {
 
-        LOGGER.info("Consume message: '{}'", message.toString());
+        LOGGER.info("listenAndLog, Consume message: '{}'", message.toString());
+
     }
+
+    @KafkaListener( topics = "${kafka.topic.name.file-creation}",
+            groupId = "#{'${spring.kafka.consumer.group-id}'.concat('-error')}",
+            containerFactory = "kafkaListenerContainerFactory")
+    public void listenWithException(ConsumerRecord<String, IcdEventFileCreation> cr, @Payload IcdEventFileCreation message) {
+
+        LOGGER.info("listenWithException, Consume message: '{}'", message.toString());
+        throw new RuntimeException("Runtime exception");
+    }
+
 
 }
