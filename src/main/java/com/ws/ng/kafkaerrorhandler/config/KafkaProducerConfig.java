@@ -1,6 +1,5 @@
 package com.ws.ng.kafkaerrorhandler.config;
 
-import com.ws.ng.kafkaerrorhandler.controller.MessageController;
 import com.ws.ng.kafkaerrorhandler.model.Message;
 import com.ws.ng.kafkaerrorhandler.producer.MessageProducer;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -11,6 +10,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.core.DefaultKafkaProducerFactory;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
+import org.springframework.kafka.listener.DeadLetterPublishingRecoverer;
+import org.springframework.kafka.listener.SeekToCurrentErrorHandler;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 
 import java.util.HashMap;
@@ -23,28 +24,56 @@ public class KafkaProducerConfig {
     private String bootstrapServers;
 
     @Bean
-      public Map<String, Object> producerConfigs() {
+    public Map<String, Object> producerConfigs() {
         Map<String, Object> props = new HashMap<>();
         props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
         props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
         props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, JsonSerializer.class);
 
         return props;
-      }
+    }
 
-      @Bean
-      public ProducerFactory<String, Message> messageProducerFactory() {
-        return new DefaultKafkaProducerFactory<>(producerConfigs());
-      }
+    @Bean
+    public ProducerFactory<String, Message> messageProducerFactory() {
+      return new DefaultKafkaProducerFactory<>(producerConfigs());
+    }
 
-      @Bean
-      public KafkaTemplate<String, Message> messageKafkaTemplate() {
-        return new KafkaTemplate<>(messageProducerFactory());
-      }
+    @Bean
+    public KafkaTemplate<String, Message> messageKafkaTemplate() {
+      return new KafkaTemplate<>(messageProducerFactory());
+    }
 
-      @Bean
-      public MessageProducer messageProducer(){
+
+    @Bean
+    public ProducerFactory<Object, Object> appProducerFactory() {
+      return new DefaultKafkaProducerFactory<>(producerConfigs());
+    }
+
+    @Bean
+    public KafkaTemplate<Object, Object> appKafkaTemplate() {
+      return new KafkaTemplate<>(appProducerFactory());
+    }
+
+    @Bean
+    public MessageProducer messageProducer(){
         return new MessageProducer();
       }
+
+
+    @Bean
+    public SeekToCurrentErrorHandler seekToCurrentErrorHandlerDeadLetter(){
+
+      return new SeekToCurrentErrorHandler(
+              new DeadLetterPublishingRecoverer(appKafkaTemplate()),
+                      3);
+    }
+
+    //By default, the error handler tracks the failed record, gives up after 10 delivery attempts
+    //and logs the failed record
+    @Bean
+    public SeekToCurrentErrorHandler seekToCurrentErrorHandler(){
+
+      return new SeekToCurrentErrorHandler();
+    }
 
 }

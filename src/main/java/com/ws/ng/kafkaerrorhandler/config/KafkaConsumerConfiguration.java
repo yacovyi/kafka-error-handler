@@ -11,13 +11,27 @@ import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.core.ConsumerFactory;
 import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.listener.SeekToCurrentErrorHandler;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
+
 @Configuration
 @EnableKafka
 public class KafkaConsumerConfiguration {
 
     @Autowired
     private KafkaParams kafkaParams;
+
+    @Autowired
+    private SeekToCurrentErrorHandler seekToCurrentErrorHandler;
+
+    @Autowired
+    private SeekToCurrentErrorHandler seekToCurrentErrorHandlerDeadLetter;
+
+    @Autowired
+    private KafkaTemplate<Object, Object> appKafkaTemplate;
+
+
     @Bean
     public ConsumerFactory<String, IcdEventFileCreation> consumerFactory() {
         JsonDeserializer<IcdEventFileCreation> jsonDeserializer =
@@ -36,6 +50,12 @@ public class KafkaConsumerConfiguration {
                 new ConcurrentKafkaListenerContainerFactory<>();
         factory.setConsumerFactory(consumerFactory());
 
+        //factory.setErrorHandler(seekToCurrentErrorHandler);
+        factory.setErrorHandler(seekToCurrentErrorHandlerDeadLetter);
         return factory;
     }
+
+
+
+
 }
