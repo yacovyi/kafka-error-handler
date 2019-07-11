@@ -5,6 +5,7 @@ import com.ws.ng.kafkaerrorhandler.model.Message;
 import com.ws.ng.kafkaerrorhandler.producer.MessageProducer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.common.KafkaException;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
@@ -17,6 +18,7 @@ import org.springframework.kafka.listener.DeadLetterPublishingRecoverer;
 import org.springframework.kafka.listener.SeekToCurrentErrorHandler;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiFunction;
@@ -78,7 +80,15 @@ public class KafkaProducerConfig {
     @Bean
     public SeekToCurrentErrorHandler seekToCurrentErrorHandlerDeadLetter(){
 	BiFunction<ConsumerRecord<?, ?>, Exception, TopicPartition>
-		DEFAULT_DESTINATION_RESOLVER = (cr, e) -> new TopicPartition(cr.topic() + ".DLT", cr.partition());
+		DEFAULT_DESTINATION_RESOLVER = (cr, e) -> {
+	    if (e instanceof IOException)
+	        return  new TopicPartition(cr.topic() + ".DLT", cr.partition());
+	    else if (e instanceof KafkaException)
+	        return  new TopicPartition(cr.topic() + ".DLT", cr.partition());
+	    else
+            return new TopicPartition(cr.topic() + ".DLT-stop", cr.partition());
+	};
+
 
       DeadLetterPublishingRecoverer deadLetterPublishingRecoverer = new DeadLetterPublishingRecoverer(appKafkaTemplate(), DEFAULT_DESTINATION_RESOLVER);
       return new SeekToCurrentErrorHandler(

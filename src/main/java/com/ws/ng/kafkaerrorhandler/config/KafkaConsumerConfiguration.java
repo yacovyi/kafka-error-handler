@@ -28,9 +28,6 @@ public class KafkaConsumerConfiguration {
     @Autowired
     private SeekToCurrentErrorHandler seekToCurrentErrorHandlerDeadLetter;
 
-    @Autowired
-    private KafkaTemplate<Object, Object> appKafkaTemplate;
-
 
     @Bean
     public ConsumerFactory<String, IcdEventFileCreation> consumerFactory() {

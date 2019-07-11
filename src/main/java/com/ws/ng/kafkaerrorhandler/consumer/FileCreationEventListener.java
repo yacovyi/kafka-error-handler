@@ -8,6 +8,8 @@ import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
+import java.io.IOException;
+
 @Component
 public class FileCreationEventListener {
 
@@ -27,7 +29,15 @@ public class FileCreationEventListener {
     public void listenWithException(ConsumerRecord<String,  IcdEventFileCreation> cr, @Payload IcdEventFileCreation message) {
 
         LOGGER.info("listenWithException, Consume message: '{}'", message.toString());
-        throw new RuntimeException("Runtime exception");
+        if (cr.offset()%2 == 0){
+            throw new RuntimeException("Runtime exception");
+        }else
+        {
+            String a = null;
+            //this will throw null pointer exception
+            a.toString();
+        }
+
     }
 
     @KafkaListener( topics = "#{'${kafka.topic.name.file-creation}'.concat('.DLT')}",
